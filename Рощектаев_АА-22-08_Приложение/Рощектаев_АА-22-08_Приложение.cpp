@@ -15,7 +15,7 @@ struct KS
 {
 	string Name;
 	int NWorkshops;
-	int RepairingWorkshops;
+	int WorkingWorkshops;
 	double Efficiency;
 };
 
@@ -35,7 +35,32 @@ void AddNewPipe()
 	cin >> Repairing;
 	Pipe N = { Name, Length, Diameter, Repairing };
 	cout << "Проверьте корректность введённых данных:\n" << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
-		"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing;
+		"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
+	cout << "Сохраняем? [Y/n]\n";
+	string sohr;
+	cin >> sohr;
+}
+
+void AddNewKS()
+{
+	string Name;
+	int NWorkshops;
+	int WorkingWorkshops;
+	double Efficiency;
+	cout << "Добавление новой КС\n" << "Введите название КС:\n";
+	cin >> Name;
+	cout << "Введите количество цехов:\n";
+	cin >> NWorkshops;
+	cout << "Введите количество работающих цехов:\n";
+	cin >> WorkingWorkshops;
+	cout << "Введите коэффициент эффективности:\n";
+	cin >> Efficiency;
+	KS K = { Name, NWorkshops, WorkingWorkshops, Efficiency };
+	cout << "Проверьте корректность введённых данных:\n" << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
+		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+	cout << "Сохраняем? [Y/n]\n";
+	string sohr;
+	cin >> sohr;
 }
 
 int main()
@@ -43,5 +68,6 @@ int main()
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
 	AddNewPipe();
+	AddNewKS();
 	return 0;
 }
