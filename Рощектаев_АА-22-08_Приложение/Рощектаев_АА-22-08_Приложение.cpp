@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <windows.h>
+#include <fstream>
 
 using namespace std;
 
@@ -21,46 +22,72 @@ struct KS
 
 void AddNewPipe()
 {
-	string Name;
-	int Length;
-	int Diameter;
-	bool Repairing;
+	Pipe N;
 	cout << "Добавление новой трубы\n" << "Введите название трубы:\n";
-	cin >> Name;
+	cin >> N.Name;
 	cout << "Введите длину трубы:\n";
-	cin >> Length;
+	cin >> N.Length;
 	cout << "Введите диаметр трубы:\n";
-	cin >> Diameter;
+	cin >> N.Diameter;
 	cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
-	cin >> Repairing;
-	Pipe N = { Name, Length, Diameter, Repairing };
+	cin >> N.Repairing;
 	cout << "Проверьте корректность введённых данных:\n" << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
 		"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
 	cout << "Сохраняем? [Y/n]\n";
 	string sohr;
 	cin >> sohr;
+	if (sohr == "Y") {
+		ofstream f;
+		f.open("save.txt", ios::app);
+		if (f.is_open())
+		{
+			f << N.Name << " " << N.Length << " " << N.Diameter << " " << N.Repairing << endl;
+		}
+		f.close();
+		cout << "Изменения сохранены в файл" << endl;
+	}
+	else if (sohr == "n") {
+		cout << "Давайте введём данные заново\n";
+		AddNewPipe();
+	}
+	else {
+		cout << "Я вас не понимаю.\n";
+	}
 }
 
 void AddNewKS()
 {
-	string Name;
-	int NWorkshops;
-	int WorkingWorkshops;
-	double Efficiency;
+	KS K;
 	cout << "Добавление новой КС\n" << "Введите название КС:\n";
-	cin >> Name;
+	cin >> K.Name;
 	cout << "Введите количество цехов:\n";
-	cin >> NWorkshops;
+	cin >> K.NWorkshops;
 	cout << "Введите количество работающих цехов:\n";
-	cin >> WorkingWorkshops;
+	cin >> K.WorkingWorkshops;
 	cout << "Введите коэффициент эффективности:\n";
-	cin >> Efficiency;
-	KS K = { Name, NWorkshops, WorkingWorkshops, Efficiency };
+	cin >> K.Efficiency;
 	cout << "Проверьте корректность введённых данных:\n" << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
 		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
 	cout << "Сохраняем? [Y/n]\n";
 	string sohr;
 	cin >> sohr;
+	if (sohr == "Y") {
+		ofstream f;
+		f.open("saveKS.txt", ios::app);
+		if (f.is_open())
+		{
+			f << K.Name << " " << K.NWorkshops << " " << K.WorkingWorkshops << " " << K.Efficiency << endl;
+		}
+		f.close();
+		cout << "Изменения сохранены в файл" << endl;
+	}
+	else if (sohr == "n") {
+		cout << "Давайте введём данные заново\n";
+		AddNewKS();
+	}
+	else {
+		cout << "Я вас не понимаю.\n";
+	}
 }
 
 int main()
