@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Рощектаев_АА-22-08_Приложение", "Рощектаев_АА-22-08_Приложение.vcxproj", "{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}.Debug|x64.ActiveCfg = Debug|x64
+		{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}.Debug|x64.Build.0 = Debug|x64
+		{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}.Debug|x86.ActiveCfg = Debug|Win32
+		{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}.Debug|x86.Build.0 = Debug|Win32
+		{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}.Release|x64.ActiveCfg = Release|x64
+		{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}.Release|x64.Build.0 = Release|x64
+		{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}.Release|x86.ActiveCfg = Release|Win32
+		{BDE9D4AD-9E1A-4733-90F4-9CA5DEF15703}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EE36AC3-BDA6-40C0-B1B7-EA5AF8BFD93E}
+	EndGlobalSection
+EndGlobal
