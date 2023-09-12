@@ -23,35 +23,45 @@ struct KS
 
 void AddNewPipe()
 {	
-	string len;
-	string dm;
 	Pipe N;
 	cout << "Добавление новой трубы\n" << "Введите название трубы:\n";
 	cin >> N.Name;
-	cout << "Введите длину трубы:\n";
-	cin >> len;
-	try
+	while (true)
 	{
-		N.Length = stoi(len);
+		cout << "Введите длину трубы:\n";
+		cin >> N.Length;
+		if (!cin)
+		{
+			cout << "Введите, пожалуйста, число\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
 	}
-	catch (invalid_argument)
+	while (true)
 	{
-		std::cout << "Введите, пожалуйста\n";
+		cout << "Введите диаметр трубы:\n";
+		cin >> N.Diameter;
+		if (!cin)
+		{
+			cout << "Введите, пожалуйста, число\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
 	}
-	catch (std::out_of_range)
+	while (true)
 	{
-		//Говорим, что число слишком большое
-		std::cout << "You can't be that old! \n";
+		cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
+		cin >> N.Repairing;
+		if (!cin || (N.Repairing != 1 && N.Repairing != 0))
+		{
+			cout << "Введите, пожалуйста, 0 или 1\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
 	}
-	catch (...)
-	{
-		//Если будет выброшено какое-то исключение, которое не обработано выше, то говорим, что возникла неизвестная ошибка
-		std::cout << "Unknown error! \n";
-	}
-	cout << "Введите диаметр трубы:\n";
-	cin >> N.Diameter;
-	cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
-	cin >> N.Repairing;
 	cout << "Проверьте корректность введённых данных:\n" << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
 		"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
 	cout << "Сохраняем? [Y/n]\n";
@@ -81,12 +91,42 @@ void AddNewKS()
 	KS K;
 	cout << "Добавление новой КС\n" << "Введите название КС:\n";
 	cin >> K.Name;
-	cout << "Введите количество цехов:\n";
-	cin >> K.NWorkshops;
-	cout << "Введите количество работающих цехов:\n";
-	cin >> K.WorkingWorkshops;
-	cout << "Введите коэффициент эффективности:\n";
-	cin >> K.Efficiency;
+	while (true)
+	{
+		cout << "Введите количество цехов:\n";
+		cin >> K.NWorkshops;
+		if (!cin)
+		{
+			cout << "Введите, пожалуйста, число\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
+	}
+	while (true)
+	{
+		cout << "Введите количество работающих цехов:\n";
+		cin >> K.WorkingWorkshops;
+		if (!cin)
+		{
+			cout << "Введите, пожалуйста, число\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
+	}
+	while (true)
+	{
+		cout << "Введите коэффициент эффективности:\n";
+		cin >> K.Efficiency;
+		if (!cin)
+		{
+			cout << "Введите, пожалуйста, число\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
+	}
 	cout << "Проверьте корректность введённых данных:\n" << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
 		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
 	cout << "Сохраняем? [Y/n]\n";
@@ -129,8 +169,9 @@ int print_menu() {
 }
 
 int menu_choice()
-{
-	int variant = print_menu();
+{	
+	int variant;
+	variant = 1;
 	do {
 		int variant = print_menu();
 
