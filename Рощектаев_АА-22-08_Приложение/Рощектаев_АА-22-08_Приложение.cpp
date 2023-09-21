@@ -2,12 +2,13 @@
 #include <windows.h>
 #include <fstream>
 #include <string>
+#include <cstring>
 
 using namespace std;
 
 struct Pipe
 {
-	string Name;
+	char Name[10];
 	int Length;
 	int Diameter;
 	bool Repairing;
@@ -15,41 +16,38 @@ struct Pipe
 
 struct KS
 {
-	string Name;
+	char Name[10];
 	int NWorkshops;
 	int WorkingWorkshops;
 	double Efficiency;
 };
+
+int proverka()
+{
+	int x;
+	while (true)
+	{
+		cin >> x;
+		if (!cin || (x < 0))
+		{
+			cout << "Введите, пожалуйста, число\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
+	}
+	return x;
+}
 
 void AddNewPipe()
 {	
 	Pipe N;
 	cout << "Добавление новой трубы\n" << "Введите название трубы:\n";
 	cin >> N.Name;
-	while (true)
-	{
-		cout << "Введите длину трубы:\n";
-		cin >> N.Length;
-		if (!cin)
-		{
-			cout << "Введите, пожалуйста, число\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
-	}
-	while (true)
-	{
-		cout << "Введите диаметр трубы:\n";
-		cin >> N.Diameter;
-		if (!cin)
-		{
-			cout << "Введите, пожалуйста, число\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
-	}
+	cout << "Введите длину трубы:\n";
+	N.Length = proverka();
+	cout << "Введите диаметр трубы:\n";
+	N.Diameter = proverka();
 	while (true)
 	{
 		cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
@@ -69,10 +67,10 @@ void AddNewPipe()
 	cin >> sohr;
 	if (sohr == "Y") {
 		ofstream f;
-		f.open("save.txt", ios::app);
+		f.open("save.txt", ios::out | ios::binary);
 		if (f.is_open())
 		{
-			f << N.Name << " " << N.Length << " " << N.Diameter << " " << N.Repairing << endl;
+			f.write((char*)&N, sizeof(Pipe));
 		}
 		f.close();
 		cout << "Изменения сохранены в файл" << endl;
@@ -91,25 +89,17 @@ void AddNewKS()
 	KS K;
 	cout << "Добавление новой КС\n" << "Введите название КС:\n";
 	cin >> K.Name;
-	while (true)
-	{
-		cout << "Введите количество цехов:\n";
-		cin >> K.NWorkshops;
-		if (!cin)
-		{
-			cout << "Введите, пожалуйста, число\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
-	}
+	cout << "Введите количество цехов:\n";
+	K.NWorkshops = proverka();
+	cout << "Введите количество работающих цехов:\n";
+	K.WorkingWorkshops = proverka();
 	while (true)
 	{
 		cout << "Введите количество работающих цехов:\n";
 		cin >> K.WorkingWorkshops;
-		if (!cin)
+		if (!cin || K.WorkingWorkshops < 0 || K.WorkingWorkshops > K.NWorkshops)
 		{
-			cout << "Введите, пожалуйста, число\n";
+			cout << "Введите, пожалуйста, корректное число\n";
 			cin.clear();
 			while (cin.get() != '\n');
 		}
@@ -119,9 +109,9 @@ void AddNewKS()
 	{
 		cout << "Введите коэффициент эффективности:\n";
 		cin >> K.Efficiency;
-		if (!cin)
+		if (!cin || K.Efficiency < 0)
 		{
-			cout << "Введите, пожалуйста, число\n";
+			cout << "Введите, пожалуйста, корректное число\n";
 			cin.clear();
 			while (cin.get() != '\n');
 		}
@@ -134,10 +124,10 @@ void AddNewKS()
 	cin >> sohr;
 	if (sohr == "Y") {
 		ofstream f;
-		f.open("saveKS.txt", ios::app);
+		f.open("saveKS.txt", ios::out | ios::binary);
 		if (f.is_open())
 		{
-			f << K.Name << " " << K.NWorkshops << " " << K.WorkingWorkshops << " " << K.Efficiency << endl;
+			f.write((char*)&K, sizeof(KS));
 		}
 		f.close();
 		cout << "Изменения сохранены в файл" << endl;
@@ -153,111 +143,40 @@ void AddNewKS()
 
 void FullView()
 {
+	Pipe N;
 	cout << "Список всех труб:\n";
-	string line;
-	ifstream in("save.txt");
+	ifstream in("save.txt", ios::in | ios::binary);
 	if (in.is_open()) {
-		while (getline(in, line)) {
-			cout << line << endl;
-		}
+		in.read((char*)&N, sizeof(Pipe));
+		cout << N.Name << " " << N.Length << " " << N.Diameter << " " << N.Repairing << endl;
 	}
 	in.close();
 
+	KS K;
 	cout << "Список всех КС:\n";
-	string line1;
-	ifstream inn("saveKS.txt");
+	ifstream inn("saveKS.txt", ios::in | ios::binary);
 	if (inn.is_open()) {
-		while (getline(inn, line1)) {
-			cout << line1 << endl;
-		}
+		inn.read((char*)&K, sizeof(KS));
+		cout << K.Name << " " << K.NWorkshops << " " << K.WorkingWorkshops << " " << K.Efficiency << endl;
 	}
 	inn.close();
 }
 
 void EditPipe()
 {
-	string line;
-	int position;
-	int n;
-	n = 0;
-	size_t i;
-	ifstream in("save.txt");
-	if (in.is_open())
-	{
-		for (i = 1; getline(in, line); i++)
-		{
-			cout << i << " " << line << endl;
-		}
-	}
-
-	while (getline(in, line))
-	{
-		n++;
+	Pipe N;
+	cout << "Список всех труб:\n";
+	ifstream in("save.txt", ios::in | ios::binary);
+	if (in.is_open()) {
+		in.read((char*)&N, sizeof(Pipe));
+		cout << N.Name << " " << N.Length << " " << N.Diameter << " " << N.Repairing << endl;
 	}
 	in.close();
-		
-	//char liness;
-	int count = 0;
-	string str;
-
-	string* lines;
-	string* liner = nullptr;
-
-	ifstream F("save.txt");
-
-	lines = new string[n];
-
-	char buffer[1000];
-
-	for (int i = 0; i < n; i++)
-	{
-		F.getline(buffer, 1000);
-
-		int len;
-		for (len = 0; buffer[len] != '\0'; len++);
-
-		lines[i].assign(buffer, len);
-	}
-
-	F.close();
-
-	liner = lines;
-	if (lines != nullptr)
-		delete[] lines;
 
 	int pos;
 	cout << "Выберите трубу:\n";
 	cin >> pos;
 
-	position = pos - 1;
-
-	Pipe N;
-	cout << "Редактирование трубы\n" << "Введите название трубы:\n";
-	cin >> N.Name;
-	while (true)
-	{
-		cout << "Введите длину трубы:\n";
-		cin >> N.Length;
-		if (!cin)
-		{
-			cout << "Введите, пожалуйста, число\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
-	}
-	while (true)
-	{
-		cout << "Введите диаметр трубы:\n";
-		cin >> N.Diameter;
-		if (!cin)
-		{
-			cout << "Введите, пожалуйста, число\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
-	}
 	while (true)
 	{
 		cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
@@ -275,30 +194,76 @@ void EditPipe()
 	cout << "Сохраняем? [Y/n]\n";
 	string sohr;
 	cin >> sohr;
+
 	if (sohr == "Y") {
-		str = N.Name + " " + to_string(N.Length) + " " + to_string(N.Diameter) + " " + to_string(N.Repairing);
-		ofstream F("save.txt");
 
-		for (int i = 0; i < position; i++)
-			F << liner[i] << endl;
+		ofstream Fout;
+		Fout.open("save.txt", ios::out | ios::binary);
 
-		F << str.c_str() << endl;
-
-		for (int i = position + 1; i < count - 1; i++)
-			F << liner[i] << endl;
-
-		F << liner[count - 1];
-
-		F.close();
-
-		//for (int i = 0; i < count; i++)
-			//delete liner[i];
-
-		delete[] liner;
+		if (Fout.is_open())
+		{
+			Fout.write((char*)&N, sizeof(Pipe));
+		}
+		Fout.close();
+		cout << "Редактирование прошло успешно\n";
 	}
 	else if (sohr == "n") {
-		cout << "Повторите редактирование";
+		cout << "Повторите редактирование\n";
 		EditPipe();
+	}
+	else {
+		cout << "Я вас не понимаю.\n";
+	}
+}
+
+void EditKS()
+{
+	KS K;
+	cout << "Список всех КС:\n";
+	ifstream inn("saveKS.txt", ios::in | ios::binary);
+	if (inn.is_open()) {
+		inn.read((char*)&K, sizeof(KS));
+		cout << K.Name << " " << K.NWorkshops << " " << K.WorkingWorkshops << " " << K.Efficiency << endl;
+	}
+	inn.close();
+
+	int pos;
+	cout << "Выберите КС:\n";
+	cin >> pos;
+
+	while (true)
+	{
+		cout << "Введите количество работающих цехов.\n";
+		cin >> K.WorkingWorkshops;
+		if (!cin || K.WorkingWorkshops > K.NWorkshops || K.WorkingWorkshops < 0)
+		{
+			cout << "Введите, пожалуйста, корректное число\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
+	}
+	cout << "Проверьте корректность введённых данных:\n" << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
+		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+	cout << "Сохраняем? [Y/n]\n";
+	string sohr;
+	cin >> sohr;
+
+	if (sohr == "Y") {
+
+		ofstream Fout;
+		Fout.open("saveKS.txt", ios::out | ios::binary);
+
+		if (Fout.is_open())
+		{
+			Fout.write((char*)&K, sizeof(KS));
+		}
+		Fout.close();
+		cout << "Редактирование прошло успешно\n";
+	}
+	else if (sohr == "n") {
+		cout << "Повторите редактирование\n";
+		EditKS();
 	}
 	else {
 		cout << "Я вас не понимаю.\n";
@@ -314,8 +279,6 @@ int print_menu() {
 	cout << "3. Просмотр всех объектов" << endl;
 	cout << "4. Редактировать трубу" << endl;
 	cout << "5. Редактировать КС" << endl;
-	cout << "6. Сохранить" << endl;
-	cout << "7. Загрузить" << endl;
 	cout << "0. Выход" << endl;
 	cout << ">>> ";
 	cin >> variant;
@@ -343,13 +306,7 @@ int menu_choice()
 			EditPipe();
 			break;
 		case 5:
-			//Редактирование КС
-			break;
-		case 6:
-			//Сохранение в файл;
-			break;
-		case 7:
-			//Загрузка из файла;
+			EditKS();
 			break;
 		case 0:
 			cout << "Выход из программы..." << endl;
@@ -366,8 +323,6 @@ int main()
 {
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
-	//AddNewPipe();
-	//AddNewKS();
 	menu_choice();
 	return 0;
 }
