@@ -8,7 +8,7 @@ using namespace std;
 
 struct Pipe
 {
-	char Name[10];
+	string Name;
 	int Length;
 	int Diameter;
 	bool Repairing;
@@ -16,7 +16,7 @@ struct Pipe
 
 struct KS
 {
-	char Name[10];
+	string Name;
 	int NWorkshops;
 	int WorkingWorkshops;
 	double Efficiency;
@@ -39,6 +39,112 @@ int proverka()
 	return x;
 }
 
+void vivodPipe(Pipe N)
+{
+	cout << "Проверьте корректность введённых данных:\n" << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
+		"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
+}
+
+void vivodKS(KS K)
+{
+	cout << "Проверьте корректность введённых данных:\n" << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
+		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+}
+
+void sohrPipe(Pipe N)
+{
+	cout << "Сохраняем? [Да/Нет]\n";
+	string sohr;
+	cin >> sohr;
+	string S;
+	S = N.Name + " " + to_string(N.Length) + " " + to_string(N.Diameter) + " " + to_string(N.Repairing) + "\n";
+	if (sohr == "Да") {
+		ofstream f;
+		f.open("save.txt", ios::out);
+		if (f.is_open())
+		{
+			f << S;
+		}
+		f.close();
+		cout << "Изменения сохранены в файл" << endl;
+	}
+	else if (sohr == "Нет") {
+		return;
+	}
+	else {
+		cout << "Я вас не понимаю.\n";
+	}
+}
+
+void sohrKS(KS K)
+{
+	cout << "Сохраняем? [Да/Нет]\n";
+	string sohr;
+	cin >> sohr;
+	string S;
+	S = K.Name + " " + to_string(K.NWorkshops) + " " + to_string(K.WorkingWorkshops) + " " + to_string(K.Efficiency) + "\n";
+	if (sohr == "Да") {
+		ofstream f;
+		f.open("saveKS.txt", ios::out);
+		if (f.is_open())
+		{
+			f << S;
+		}
+		f.close();
+		cout << "Изменения сохранены в файл" << endl;
+	}
+	else if (sohr == "Нет") {
+		return;
+	}
+	else {
+		cout << "Я вас не понимаю.\n";
+	}
+}
+
+Pipe readPipe()
+{
+	Pipe N;
+	cout << "Список всех труб:\n";
+	ifstream in("save.txt");
+	if (in.is_open()) {
+		in >> N.Name >> N.Length >> N.Diameter >> N.Repairing;
+	}
+	in.close();
+	cout << N.Name << " " << N.Length << " " << N.Diameter << " " << N.Repairing << endl;
+	return N;
+}
+
+KS readKS()
+{
+	KS K;
+	cout << "Список всех КС:\n";
+	ifstream in("saveKS.txt");
+	if (in.is_open()) {
+		in >> K.Name >> K.NWorkshops >> K.WorkingWorkshops >> K.Efficiency;
+		cout << K.Name << " " << K.NWorkshops << " " << K.WorkingWorkshops << " " << K.Efficiency << endl;
+	}
+	in.close();
+	return K;
+}
+
+bool sost()
+{
+	Pipe N;
+	while (true)
+	{
+		cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
+		cin >> N.Repairing;
+		if (!cin)
+		{
+			cout << "Введите, пожалуйста, 0 или 1\n";
+			cin.clear();
+			while (cin.get() != '\n');
+		}
+		else break;
+	}
+	return N.Repairing;
+}
+
 void AddNewPipe()
 {	
 	Pipe N;
@@ -48,40 +154,9 @@ void AddNewPipe()
 	N.Length = proverka();
 	cout << "Введите диаметр трубы:\n";
 	N.Diameter = proverka();
-	while (true)
-	{
-		cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
-		cin >> N.Repairing;
-		if (!cin || (N.Repairing != 1 && N.Repairing != 0))
-		{
-			cout << "Введите, пожалуйста, 0 или 1\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
-	}
-	cout << "Проверьте корректность введённых данных:\n" << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
-		"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
-	cout << "Сохраняем? [Y/n]\n";
-	string sohr;
-	cin >> sohr;
-	if (sohr == "Y") {
-		ofstream f;
-		f.open("save.txt", ios::out | ios::binary);
-		if (f.is_open())
-		{
-			f.write((char*)&N, sizeof(Pipe));
-		}
-		f.close();
-		cout << "Изменения сохранены в файл" << endl;
-	}
-	else if (sohr == "n") {
-		cout << "Давайте введём данные заново\n";
-		AddNewPipe();
-	}
-	else {
-		cout << "Я вас не понимаю.\n";
-	}
+	N.Repairing = sost();
+	vivodPipe(N);
+	sohrPipe(N);
 }
 
 void AddNewKS()
@@ -117,120 +192,30 @@ void AddNewKS()
 		}
 		else break;
 	}
-	cout << "Проверьте корректность введённых данных:\n" << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
-		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
-	cout << "Сохраняем? [Y/n]\n";
-	string sohr;
-	cin >> sohr;
-	if (sohr == "Y") {
-		ofstream f;
-		f.open("saveKS.txt", ios::out | ios::binary);
-		if (f.is_open())
-		{
-			f.write((char*)&K, sizeof(KS));
-		}
-		f.close();
-		cout << "Изменения сохранены в файл" << endl;
-	}
-	else if (sohr == "n") {
-		cout << "Давайте введём данные заново\n";
-		AddNewKS();
-	}
-	else {
-		cout << "Я вас не понимаю.\n";
-	}
+	vivodKS(K);
+	sohrKS(K);
 }
 
 void FullView()
 {
-	Pipe N;
-	cout << "Список всех труб:\n";
-	ifstream in("save.txt", ios::in | ios::binary);
-	if (in.is_open()) {
-		in.read((char*)&N, sizeof(Pipe));
-		cout << N.Name << " " << N.Length << " " << N.Diameter << " " << N.Repairing << endl;
-	}
-	in.close();
+	readPipe();
 
-	KS K;
-	cout << "Список всех КС:\n";
-	ifstream inn("saveKS.txt", ios::in | ios::binary);
-	if (inn.is_open()) {
-		inn.read((char*)&K, sizeof(KS));
-		cout << K.Name << " " << K.NWorkshops << " " << K.WorkingWorkshops << " " << K.Efficiency << endl;
-	}
-	inn.close();
+	readKS();
 }
 
 void EditPipe()
 {
 	Pipe N;
-	cout << "Список всех труб:\n";
-	ifstream in("save.txt", ios::in | ios::binary);
-	if (in.is_open()) {
-		in.read((char*)&N, sizeof(Pipe));
-		cout << N.Name << " " << N.Length << " " << N.Diameter << " " << N.Repairing << endl;
-	}
-	in.close();
-
-	int pos;
-	cout << "Выберите трубу:\n";
-	cin >> pos;
-
-	while (true)
-	{
-		cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
-		cin >> N.Repairing;
-		if (!cin || (N.Repairing != 1 && N.Repairing != 0))
-		{
-			cout << "Введите, пожалуйста, 0 или 1\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
-	}
-	cout << "Проверьте корректность введённых данных:\n" << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
-		"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
-	cout << "Сохраняем? [Y/n]\n";
-	string sohr;
-	cin >> sohr;
-
-	if (sohr == "Y") {
-
-		ofstream Fout;
-		Fout.open("save.txt", ios::out | ios::binary);
-
-		if (Fout.is_open())
-		{
-			Fout.write((char*)&N, sizeof(Pipe));
-		}
-		Fout.close();
-		cout << "Редактирование прошло успешно\n";
-	}
-	else if (sohr == "n") {
-		cout << "Повторите редактирование\n";
-		EditPipe();
-	}
-	else {
-		cout << "Я вас не понимаю.\n";
-	}
+	N = readPipe();
+	N.Repairing = sost();
+	vivodPipe(N);
+	sohrPipe(N);
 }
 
 void EditKS()
 {
 	KS K;
-	cout << "Список всех КС:\n";
-	ifstream inn("saveKS.txt", ios::in | ios::binary);
-	if (inn.is_open()) {
-		inn.read((char*)&K, sizeof(KS));
-		cout << K.Name << " " << K.NWorkshops << " " << K.WorkingWorkshops << " " << K.Efficiency << endl;
-	}
-	inn.close();
-
-	int pos;
-	cout << "Выберите КС:\n";
-	cin >> pos;
-
+	K = readKS();
 	while (true)
 	{
 		cout << "Введите количество работающих цехов.\n";
@@ -243,31 +228,8 @@ void EditKS()
 		}
 		else break;
 	}
-	cout << "Проверьте корректность введённых данных:\n" << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
-		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
-	cout << "Сохраняем? [Y/n]\n";
-	string sohr;
-	cin >> sohr;
-
-	if (sohr == "Y") {
-
-		ofstream Fout;
-		Fout.open("saveKS.txt", ios::out | ios::binary);
-
-		if (Fout.is_open())
-		{
-			Fout.write((char*)&K, sizeof(KS));
-		}
-		Fout.close();
-		cout << "Редактирование прошло успешно\n";
-	}
-	else if (sohr == "n") {
-		cout << "Повторите редактирование\n";
-		EditKS();
-	}
-	else {
-		cout << "Я вас не понимаю.\n";
-	}
+	vivodKS(K);
+	sohrKS(K);
 }
 
 int print_menu() {
