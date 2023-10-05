@@ -25,38 +25,43 @@ struct KS
 int proverka()
 {
 	int x;
-	while (true)
+	while ((cin >> x).fail() || std::cin.peek() != '\n' || x < 0)
 	{
-		cin >> x;
-		if (!cin || (x < 0))
-		{
-			cout << "Введите, пожалуйста, число\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
+		cout << "Повторите ввод числа:" << endl;
+		cin.clear();
+		cin.ignore(1000, '\n');
 	}
 	return x;
 }
 
 void vivodPipe(const Pipe& N)
 {
-	cout << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
-		"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
+	if (N.Name.empty())
+	{
+		cout << "Нет доступных труб для взаимодействия" << endl;
+	}
+	else
+	{
+		cout << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
+			"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
+	}
 }
 
 void vivodKS(const KS& K)
 {
-	cout << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
-		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+	if (K.Name.empty())
+	{
+		cout << "Нет доступных КС для взаимодействия" << endl;
+	}
+	else
+	{
+		cout << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
+			"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+	}
 }
 
 void sohranenie(const Pipe& N, const KS& K)
 {
-	string S;
-	S = N.Name + " " + to_string(N.Length) + " " + to_string(N.Diameter) + " " + to_string(N.Repairing) + "\n";
-	string SS;
-	SS = K.Name + " " + to_string(K.NWorkshops) + " " + to_string(K.WorkingWorkshops) + " " + to_string(K.Efficiency) + "\n";
 	ofstream f;
 	f.open("save.txt", ios::out);
 	if (f.is_open())
@@ -76,9 +81,8 @@ void sohranenie(const Pipe& N, const KS& K)
 	cout << "Изменения сохранены в файл" << endl;
 }
 
-Pipe readPipe()
+Pipe readPipe(Pipe& N)
 {
-	Pipe N;
 	string flag;
 	ifstream in("save.txt");
 	if (in.is_open()) {
@@ -99,9 +103,8 @@ Pipe readPipe()
 	return N;
 }
 
-KS readKS()
+KS readKS(KS& K)
 {
-	KS K;
 	string flag;
 	ifstream in("save.txt");
 	if (in.is_open()) {
@@ -280,8 +283,8 @@ int main()
 			K = EditKS(K);
 			break;
 		case 6:
-			N = readPipe();
-			K = readKS();
+			N = readPipe(N);
+			K = readKS(K);
 			break;
 		case 7:
 			sohranenie(N, K);
