@@ -34,16 +34,16 @@ int proverka()
 	return x;
 }
 
-void vivodPipe(const Pipe& N)
+void vivodPipe(const Pipe& P)
 {
-	if (N.Name.empty())
+	if (P.Name.empty())
 	{
 		cout << "Нет доступных труб для взаимодействия" << endl;
 	}
 	else
 	{
-		cout << "Название трубы: " << N.Name << "\n" << "Длина трубы: " << N.Length <<
-			"\n" << "Диаметр трубы: " << N.Diameter << "\n" << "Состояние трубы: " << N.Repairing << "\n";
+		cout << "Название трубы: " << P.Name << "\n" << "Длина трубы: " << P.Length <<
+			"\n" << "Диаметр трубы: " << P.Diameter << "\n" << "Состояние трубы: " << P.Repairing << "\n";
 	}
 }
 
@@ -60,17 +60,28 @@ void vivodKS(const KS& K)
 	}
 }
 
-void sohranenie(const Pipe& N, const KS& K)
+void sohraneniePipe(const Pipe& P)
 {
 	ofstream f;
 	f.open("save.txt", ios::out);
-	if (f.is_open())
+	if (f.is_open() && !P.Name.empty())
 	{
 		f << "Pipes" << "\n";
-		f << N.Name << "\n";
-		f << N.Length << "\n";
-		f << N.Diameter << "\n";
-		f << N.Repairing << "\n";
+		f << P.Name << "\n";
+		f << P.Length << "\n";
+		f << P.Diameter << "\n";
+		f << P.Repairing << "\n";
+	}
+	f.close();
+	cout << "Изменения сохранены в файл" << endl;
+}
+
+void sohranenieKS(const KS& K)
+{
+	ofstream f;
+	f.open("save.txt", ios::app);
+	if (f.is_open() && !K.Name.empty())
+	{
 		f << "KS" << "\n";
 		f << K.Name << "\n";
 		f << K.NWorkshops << "\n";
@@ -81,7 +92,7 @@ void sohranenie(const Pipe& N, const KS& K)
 	cout << "Изменения сохранены в файл" << endl;
 }
 
-Pipe readPipe(Pipe& N)
+void readPipe(Pipe& P)
 {
 	string flag;
 	ifstream in("save.txt");
@@ -91,19 +102,18 @@ Pipe readPipe(Pipe& N)
 		{
 			if (flag == "Pipes")
 			{
-				getline(in, N.Name);
-				in >> N.Length;
-				in >> N.Diameter;
-				in >> N.Repairing;
+				getline(in, P.Name);
+				in >> P.Length;
+				in >> P.Diameter;
+				in >> P.Repairing;
 			}
 			getline(in, flag);
 		}
 	}
 	in.close();
-	return N;
 }
 
-KS readKS(KS& K)
+void readKS(KS& K)
 {
 	string flag;
 	ifstream in("save.txt");
@@ -122,7 +132,6 @@ KS readKS(KS& K)
 		}
 	}
 	in.close();
-	return K;
 }
 
 bool sost()
@@ -136,7 +145,7 @@ bool sost()
 		{
 			cout << "Введите, пожалуйста, 0 или 1\n";
 			cin.clear();
-			while (cin.get() != '\n');//!!!!
+			cin.ignore(1000, '\n');
 		}
 		else break;
 	}
@@ -145,25 +154,26 @@ bool sost()
 
 Pipe AddNewPipe()
 {	
-	Pipe N;
+	Pipe P;
 	cout << "Добавление новой трубы\n" << "Введите название трубы:\n";
 	cin >> ws;
-	getline(cin, N.Name);
+	getline(cin, P.Name);
 	cout << "Введите длину трубы:\n";
-	N.Length = proverka();
+	P.Length = proverka();
 	cout << "Введите диаметр трубы:\n";
-	N.Diameter = proverka();
-	N.Repairing = sost();
+	P.Diameter = proverka();
+	P.Repairing = sost();
 	cout << "Проверьте корректность введённых данных:\n";
-	vivodPipe(N);
-	return N;
+	vivodPipe(P);
+	return P;
 }
 
 KS AddNewKS()
 {
 	KS K;
 	cout << "Добавление новой КС\n" << "Введите название КС:\n";
-	cin >> K.Name;
+	cin >> ws;
+	getline(cin, K.Name);
 	cout << "Введите количество цехов:\n";
 	K.NWorkshops = proverka();
 	cout << "Введите количество работающих цехов:\n";
@@ -196,46 +206,64 @@ KS AddNewKS()
 	return K;
 }
 
-void FullView(const Pipe& N, const KS& K)
+void FullView(const Pipe& P, const KS& K)
 {
 	int variant;
 	cout << "Выберите действие" << endl;
 	cout << "1. Вывести список труб" << endl;
 	cout << "2. Вывести список КС" << endl;
+	cout << "3. Вывести все имеющиеся данные" << endl;
 	variant = proverka();
 	switch (variant) {
 	case 1:
-		vivodPipe(N);
+		vivodPipe(P);
 		break;
 	case 2:
+		vivodKS(K);
+		break;
+	case 3:
+		vivodPipe(P);
 		vivodKS(K);
 		break;
 	}
 }
 
-Pipe EditPipe(Pipe& N)
+void EditPipe(Pipe& P)
 {
-	N.Repairing = sost();
-	vivodPipe(N);
-	return N;
+	if (P.Name.empty())
+	{
+		cout << "Нет доступных труб для взаимодействия" << endl;
+	}
+	else
+	{
+		P.Repairing = sost();
+		vivodPipe(P);
+	}
 }
 
-KS EditKS(KS& K)
+void EditKS(KS& K)
 {
-	while (true)
+	if (K.Name.empty())
 	{
-		cout << "Введите количество работающих цехов.\n";
-		cin >> K.WorkingWorkshops;
-		if (!cin || K.WorkingWorkshops > K.NWorkshops || K.WorkingWorkshops < 0)
-		{
-			cout << "Введите, пожалуйста, корректное число\n";
-			cin.clear();
-			while (cin.get() != '\n');
-		}
-		else break;
+		cout << "Нет доступных КС для взаимодействия" << endl;
 	}
-	vivodKS(K);
-	return K;
+	else
+	{
+		while (true)
+		{
+			cout << "Введите количество работающих цехов.\n";
+			cin >> K.WorkingWorkshops;
+			if (!cin || K.WorkingWorkshops > K.NWorkshops || K.WorkingWorkshops < 0)
+			{
+				cout << "Введите, пожалуйста, корректное число, оно не должно превышать " << K.NWorkshops << endl;
+				cin.clear();
+				cin.ignore(1000, '\n');
+			}
+			else break;
+		}
+		vivodKS(K);
+	}
+	
 }
 
 int print_menu() {
@@ -259,7 +287,7 @@ int main()
 {
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
-	Pipe N;
+	Pipe P;
 	KS K;
 	int variant;
 	variant = 1;
@@ -268,26 +296,27 @@ int main()
 
 		switch (variant) {
 		case 1:
-			N = AddNewPipe();
+			P = AddNewPipe();
 			break;
 		case 2:
 			K = AddNewKS();
 			break;
 		case 3:
-			FullView(N, K);
+			FullView(P, K);
 			break;
 		case 4:
-			N = EditPipe(N);
+			EditPipe(P);
 			break;
 		case 5:
-			K = EditKS(K);
+			EditKS(K);
 			break;
 		case 6:
-			N = readPipe(N);
-			K = readKS(K);
+			readPipe(P);
+			readKS(K);
 			break;
 		case 7:
-			sohranenie(N, K);
+			sohraneniePipe(P);
+			sohranenieKS(K);
 			break;
 		case 0:
 			cout << "Выход из программы..." << endl;
