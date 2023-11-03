@@ -21,10 +21,11 @@ public:
 	int getPipeID() const;
 	void vivodPipe();
 	void vivodMapPipe(unordered_map <int, Pipeline> MP);
-	void sohraneniePipe(unordered_map <int, Pipeline> MP);
-	void readPipe(ifstream in, unordered_map <int, Pipeline> MP);
-	Pipeline AddNewPipe();
+	void static sohraneniePipe(ofstream& f, unordered_map <int, Pipeline> MP, const int &id, Pipeline& item);
+	void static readPipe(ifstream& in, Pipeline& P);
+	Pipeline AddNewPipe(Pipeline& P);
 	void EditPipe(Pipeline& P);
+	void setPipeID(int);
 };
 
 

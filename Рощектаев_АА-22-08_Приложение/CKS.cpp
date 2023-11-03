@@ -42,59 +42,28 @@ void KStation::vivodMapKS(unordered_map <int, KStation> MK)
 	}
 }
 
-void KStation::sohranenieKS(unordered_map <int, KStation> MK)
+void KStation::sohranenieKS(ofstream& f, unordered_map <int, KStation> MK, const int& id, KStation& item)
 {
-	ofstream f;
-	f.open("save.txt", ios::app);
-	if (f.is_open())
-	{
-		if (!MK.size() == 0)
-		{
-			for (const auto& pair : MK)
-			{
-				f << MK.size() << endl;
-				f << pair.first << "\n"
-					<< pair.second.Name << "\n"
-					<< pair.second.NWorkshops << "\n"
-					<< pair.second.WorkingWorkshops << "\n"
-					<< pair.second.Efficiency << "\n";
-			}
-		}
-		else if (MK.size() == 0)
-		{
-			f << 0 << endl;
-		}
-	}
-	f.close();
-	cout << "Изменения сохранены в файл" << endl;
+	f << id << "\n"
+		<< item.Name << "\n"
+		<< item.NWorkshops << "\n"
+		<< item.WorkingWorkshops << "\n"
+		<< item.Efficiency << "\n";
 }
 
-unordered_map <int, KStation> KStation::readKS()
+void KStation::readKS(ifstream& in, unordered_map <int, KStation>& MK)
 {
-	unordered_map <int, KStation> MK;
 	KStation K;
-	int id;
-	ifstream in("save.txt");
-	if (in.is_open()) {
-		int countKS;
-		in >> countKS;
-		while (countKS--)
-		{
-			in >> id;
-			getline(in, K.Name);
-			in >> K.NWorkshops;
-			in >> K.WorkingWorkshops;
-			in >> K.Efficiency;
-			MK.insert({ id, K });
-		}
-	}
-	in.close();
-	return MK;
+	in >> K.id;
+	getline(in, K.Name);
+	in >> K.NWorkshops;
+	in >> K.WorkingWorkshops;
+	in >> K.Efficiency;
+	MK.insert({ K.id, K});
 }
 
-KStation KStation::AddNewKS()
+KStation KStation::AddNewKS(KStation& K)
 {
-	KStation K;
 	cout << "Добавление новой КС\n" << "Введите название КС:\n";
 	cin >> ws;
 	getline(cin, K.Name);

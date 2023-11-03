@@ -10,21 +10,74 @@
 
 using namespace std;
 
-unordered_map <int, Pipeline> Pipeline::readPipes()
+unordered_map <int, Pipeline> readPipes(unordered_map <int, Pipeline>& MP)
 {
-	unordered_map <int, Pipeline> MP;
 	ifstream in("save.txt");
 	if (in.is_open()) {
 		int countPipe;
 		in >> countPipe;
 		while (countPipe--)
 		{
-			Pipeline::readPipe(in, MP);
+			//Pipeline::readPipe(in, P);
 		}
 		cout << "Данные загружены" << endl;
 	}
+	in.close();
 	return MP;
 }
+
+void readKSs(unordered_map <int, KStation>& MK)
+{
+	ifstream in("save.txt");
+	if (in.is_open()) {
+		int countKS;
+		in >> countKS;
+		while (countKS--)
+		{
+			KStation::readKS(in, MK);
+		}
+	}
+	in.close();
+}
+
+void sohraneniePipes(unordered_map <int, Pipeline> MP)
+{
+	ofstream f;
+	f.open("save.txt", ios::out);
+	if (f.is_open())
+	{
+		f << MP.size() << endl;
+		if (!MP.size() == 0)
+		{
+			for (auto& [id, item] : MP)
+			{
+				Pipeline::sohraneniePipe(f, MP, id, item);
+			}
+		}
+	}
+	f.close();
+	cout << "Изменения сохранены в файл" << endl;
+}
+
+void sohranenieKSs(unordered_map <int, KStation> MK)
+{
+	ofstream f;
+	f.open("save.txt", ios::app);
+	if (f.is_open())
+	{
+		f << MK.size() << endl;
+		if (!MK.size() == 0)
+		{
+			for (auto& [id, item] : MK)
+			{
+				KStation::sohranenieKS(f, MK, id, item);
+			}
+		}
+	}
+	f.close();
+	cout << "Изменения сохранены в файл" << endl;
+}
+
 
 void FullView(unordered_map <int, Pipeline> MP, unordered_map <int, KStation> MK)
 {
@@ -65,7 +118,7 @@ int print_menu() {
 	cout << "7. Сохранить данные" << endl;
 	cout << "0. Выход" << endl;
 	cout << ">>> ";
-	getCorrect(variant);
+	variant = getInRange(0, 7);
 	return variant;
 }
 
@@ -85,13 +138,13 @@ int main()
 		case 1:
 		{
 			Pipeline P;
-			MP.insert({ P.getPipeID(), P.AddNewPipe() });
+			MP.insert({ P.getPipeID(), P.AddNewPipe(P) });
 			break;
 		}
 		case 2:
 		{
 			KStation K;
-			MK.insert({ K.getKSID(), K.AddNewKS() });
+			MK.insert({ K.getKSID(), K.AddNewKS(K) });
 			break;
 		}
 		case 3:
@@ -104,12 +157,33 @@ int main()
 			//EditKS(K);
 			break;
 		case 6:
-			//MP = P.readPipe();
-			//MK = K.readKS();
+		{
+			ifstream in("save.txt");
+			if (in.is_open()) {
+				int countPipe;
+				in >> countPipe;
+				while (countPipe--)
+				{
+					Pipeline P;
+					int iddd;
+					in >> iddd;
+					P.setPipeID(iddd);
+					getline(in, P.Name);
+					in >> P.Length;
+					in >> P.Diameter;
+					in >> P.Repairing;
+					MP.insert({ P.getPipeID(), P });
+					
+				}
+				cout << "Данные загружены" << endl;
+			}
+			in.close();
+			//readKSs(MK);
+		}
 			break;
 		case 7:
-			//P.sohraneniePipe(MP);
-			//K.sohranenieKS(MK);
+			sohraneniePipes(MP);
+			sohranenieKSs(MK);
 			break;
 		case 0:
 			cout << "Выход из программы..." << endl;

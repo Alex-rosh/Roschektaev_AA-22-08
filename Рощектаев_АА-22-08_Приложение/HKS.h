@@ -19,9 +19,9 @@ public:
 	KStation();
 	void vivodKS(const KStation& K);
 	void vivodMapKS(unordered_map <int, KStation> MK);
-	void sohranenieKS(unordered_map <int, KStation> MK);
-	unordered_map <int, KStation> readKS();
-	KStation AddNewKS();
+	void static sohranenieKS(ofstream& f, unordered_map <int, KStation> MK, const int& id, KStation& item);
+	void static readKS(ifstream& in, unordered_map <int, KStation>& MK);
+	KStation AddNewKS(KStation& K);
 	void EditKS(KStation& K);
 	int getKSID() const;
 };
