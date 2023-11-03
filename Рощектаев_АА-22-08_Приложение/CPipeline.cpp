@@ -17,10 +17,6 @@ int Pipeline::getPipeID() const
 	return id;
 }
 
-void Pipeline::setPipeID(int Pipeid)
-{
-	id = Pipeid;
-}
 
 void Pipeline::vivodPipe()
 {
@@ -35,39 +31,18 @@ void Pipeline::vivodPipe()
 	}
 }
 
-void Pipeline::vivodMapPipe(unordered_map <int, Pipeline> MP)
-{
-	for (auto& [id, item] : MP)
-	{
-		cout << "ID: " << id << "\n"
-			<< "Название трубы: " << item.Name << "\n"
-			<< "Длина трубы: " << item.Length << "\n"
-			<< "Диаметр трубы: " << item.Diameter << "\n"
-			<< "Состояние трубы: " << item.Repairing << "\n";
-	}
-}
+//void Pipeline::readPipe(ifstream& in)
+//{
+//	in >> id;
+//	getline(in, Name);
+//	in >> Length;
+//	in >> Diameter;
+//	in >> Repairing;
+//}
 
-void Pipeline::sohraneniePipe(ofstream& f, unordered_map <int, Pipeline> MP, const int &id, Pipeline &item)
+Pipeline Pipeline::AddNewPipe()
 {
-	f << id << "\n"
-		<< item.Name << "\n"
-		<< item.Length << "\n"
-		<< item.Diameter << "\n"
-		<< item.Repairing << "\n";
-}
-
-void Pipeline::readPipe(ifstream& in, Pipeline& P)
-{
-	in >> P.id;
-	P.setPipeID(P.id);
-	getline(in, P.Name);
-	in >> P.Length;
-	in >> P.Diameter;
-	in >> P.Repairing;
-}
-
-Pipeline Pipeline::AddNewPipe(Pipeline& P)
-{
+	Pipeline P;
 	cout << "Добавление новой трубы\n" << "Введите название трубы:\n";
 	cin >> ws;
 	getline(cin, P.Name);
@@ -82,15 +57,15 @@ Pipeline Pipeline::AddNewPipe(Pipeline& P)
 	return P;
 }
 
-void Pipeline::EditPipe(Pipeline& P)
+void Pipeline::EditPipe()
 {
-	if (P.Name.empty())
+	if (Name.empty())
 	{
 		cout << "Нет доступных труб для взаимодействия" << endl;
 	}
 	else
 	{
-		P.Repairing = getInRange(0, 1);
+		Repairing = getInRange(0, 1);
 		vivodPipe();
 	}
 }

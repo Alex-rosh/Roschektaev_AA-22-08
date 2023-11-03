@@ -17,53 +17,33 @@ int KStation::getKSID() const
 	return id;
 }
 
-void KStation::vivodKS(const KStation& K)
+void KStation::vivodKS()
 {
-	if (K.Name.empty())
+	if (Name.empty())
 	{
 		cout << "Нет доступных КС для взаимодействия" << endl;
 	}
 	else
 	{
-		cout << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
-			"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+		cout << "Название КС: " << Name << "\n" << "Количество цехов: " << NWorkshops <<
+			"\n" << "Количество цехов в работе: " << WorkingWorkshops << "\n" << "Коэффициент эффективности: " << Efficiency << "\n";
 	}
 }
 
-void KStation::vivodMapKS(unordered_map <int, KStation> MK)
-{
-	for (const auto& pair : MK)
-	{
-		cout << pair.first << "\n"
-			<< "Название КС: " << pair.second.Name << "\n"
-			<< "Количество цехов: " << pair.second.NWorkshops << "\n"
-			<< "Количество цехов в работе" << pair.second.WorkingWorkshops << "\n"
-			<< "Коэффициент эффективности" << pair.second.Efficiency << "\n";
-	}
-}
+//void KStation::readKS(ifstream& in, unordered_map <int, KStation>& MK)
+//{
+//	KStation K;
+//	in >> K.id;
+//	getline(in, K.Name);
+//	in >> K.NWorkshops;
+//	in >> K.WorkingWorkshops;
+//	in >> K.Efficiency;
+//	MK.insert({ K.id, K});
+//}
 
-void KStation::sohranenieKS(ofstream& f, unordered_map <int, KStation> MK, const int& id, KStation& item)
-{
-	f << id << "\n"
-		<< item.Name << "\n"
-		<< item.NWorkshops << "\n"
-		<< item.WorkingWorkshops << "\n"
-		<< item.Efficiency << "\n";
-}
-
-void KStation::readKS(ifstream& in, unordered_map <int, KStation>& MK)
+KStation KStation::AddNewKS()
 {
 	KStation K;
-	in >> K.id;
-	getline(in, K.Name);
-	in >> K.NWorkshops;
-	in >> K.WorkingWorkshops;
-	in >> K.Efficiency;
-	MK.insert({ K.id, K});
-}
-
-KStation KStation::AddNewKS(KStation& K)
-{
 	cout << "Добавление новой КС\n" << "Введите название КС:\n";
 	cin >> ws;
 	getline(cin, K.Name);
@@ -74,21 +54,21 @@ KStation KStation::AddNewKS(KStation& K)
 	cout << "Введите коэффициент эффективности:\n";
 	getCorrect(K.Efficiency);
 	cout << "Проверьте корректность введённых данных:\n";
-	vivodKS(K);
+	K.vivodKS();
 	return K;
 }
 
-void KStation::EditKS(KStation& K)
+void KStation::EditKS()
 {
-	if (K.Name.empty())
+	if (Name.empty())
 	{
 		cout << "Нет доступных КС для взаимодействия" << endl;
 	}
 	else
 	{
 		cout << "Введите количество работающих цехов:\n";
-		K.WorkingWorkshops = getInRange(0, K.NWorkshops);
-		vivodKS(K);
+		WorkingWorkshops = getInRange(0, NWorkshops);
+		vivodKS();
 	}
 
 }

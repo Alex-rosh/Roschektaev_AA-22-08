@@ -4,7 +4,7 @@
 template <typename T>
 T getCorrect(T& x)
 {
-    while ((std::cin >> x).fail() || x <= 0)
+    while ((std::cin >> x).fail() || x < 0)
     {
         std::cout << "Неправильное число, попробуйте ещё раз: ";
         std::cin.clear();
