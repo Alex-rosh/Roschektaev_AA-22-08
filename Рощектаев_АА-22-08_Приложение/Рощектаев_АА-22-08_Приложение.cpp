@@ -175,32 +175,128 @@ void deleteOneKS(unordered_map<int, KStation>& MK)
 	cout << "Station removed!" << endl;
 }
 
-//void PipeSearch(unordered_map<int, Pipeline>& MP)
-//{
-//	cout << "Enter the search parameter: \n"
-//		<< "1 - find pipe by IDs; \n"
-//		<< "2 - find pipe by the repair\n";
-//	if (getInRange(1, 2) == 1)
-//	{
-//		int pID;
-//		cout << "Enter pipe IDs: ";
-//		getCorrect(pID);
-//		for (int i : findPipeByFilter(MP, Pipeline::checkByID, pID))
-//		{
-//			MP[i].vivodPipe();
-//		}
-//	}
-//	else
-//	{
-//		int repair;
-//		cout << "Enter marker of repair: ";
-//		repair = getInRange(0, 1);
-//		for (int i : findPipeByFilter(MP, Pipeline::checkByRepair, repair))
-//		{
-//			MP[i].vivodPipe();
-//		}
-//	}
-//}
+template<typename T>
+using Filter2 = bool(*)(const Pipeline& p, T parameter);
+
+bool checkByID(const Pipeline& p, int parameter)
+{
+	return p.getPipeID() >= parameter;
+}
+
+bool checkByRepair(const Pipeline& p, int parameter)
+{
+	return p.Repairing == parameter;
+}
+
+template<typename T>
+vector<int> findPipeByFilter(unordered_map<int, Pipeline>& mP, Filter2<T> f, T parameter)
+{
+	vector<int> result;
+
+	for (auto& [pID, p] : mP)
+	{
+		if (f(p, parameter))
+		{
+			result.push_back(p.getPipeID());
+		}
+	}
+
+	if (result.empty())
+	{
+		cout << "Трубы с такими параметрами не найдены\n";
+	}
+
+	return result;
+}
+
+
+template<typename T>
+using Filter1 = bool(*)(const KStation& s, T parameter);
+
+bool checkByName(const KStation& s, string parameter)
+{
+	return s.Name == parameter;
+}
+
+bool checkByNotWorkingWorkshops(const KStation& s, double parameter)
+{
+	return (double((s.NWorkshops - s.WorkingWorkshops) * 100) / s.NWorkshops) >= parameter;
+}
+
+template<typename T>
+vector<int> findStationByFilter(unordered_map<int, KStation>& mS, Filter1<T> f, T parameter)
+{
+	vector<int> result;
+
+	for (auto& [sID, s] : mS)
+	{
+		if (f(s, parameter))
+		{
+			result.push_back(s.getKSID());
+		}
+	}
+
+	if (result.empty())
+	{
+		cout << "КС с такими параметрами не найдены\n";
+	}
+
+	return result;
+}
+
+void PipeSearch(unordered_map<int, Pipeline>& MP)
+{
+	cout << "Выберите параметры поиска: \n"
+		<< "1 - Найти трубу по ID; \n"
+		<< "2 - Найти трубу по состоянию\n";
+	if (getInRange(1, 2) == 1)
+	{
+		int pID;
+		cout << "Введите ID трубы: ";
+		getCorrect(pID);
+		for (int i : findPipeByFilter(MP, checkByID, pID))
+		{
+			cout << MP[i];
+		}
+	}
+	else
+	{
+		int repair;
+		cout << "Введите состояние трубы: ";
+		repair = getInRange(0, 1);
+		for (int i : findPipeByFilter(MP, checkByRepair, repair))
+		{
+			cout << MP[i];
+		}
+	}
+}
+
+void KSSearch(unordered_map<int, KStation>& MK)
+{
+	cout << "Выберите параметры поиска: \n"
+		<< "1 - Найти КС по названию; \n"
+		<< "2 - Найти КС по проценту не рабочих цехов\n";
+	if (getInRange(1, 2) == 1)
+	{
+		string name;
+		cout << "Введите название КС: ";
+		cin >> name;
+		for (int i : findStationByFilter(MK, checkByName, name))
+		{
+			cout << MK[i];
+		}
+	}
+	else
+	{
+		double percent;
+		cout << "Введите процент не рабочих цехов: ";
+		getCorrect(percent);
+		for (int i : findStationByFilter(MK, checkByNotWorkingWorkshops, percent))
+		{
+			cout << MK[i];
+		}
+	}
+}
 
 void FullView(unordered_map <int, Pipeline> MP, unordered_map <int, KStation> MK)
 {
@@ -239,9 +335,11 @@ int print_menu() {
 	cout << "7. Сохранить данные" << endl;
 	cout << "8. Удалить трубу" << endl;
 	cout << "9. Удалить станцию" << endl;
+	cout << "10. Поиск по трубам" << endl;
+	cout << "11. Поиск по КС" << endl;
 	cout << "0. Выход" << endl;
 	cout << ">>> ";
-	variant = getInRange(0, 9);
+	variant = getInRange(0, 11);
 	return variant;
 }
 
@@ -308,7 +406,11 @@ int main()
 			deleteOneKS(MK);
 			break;
 		case 10:
-
+			PipeSearch(MP);
+			break;
+		case 11:
+			KSSearch(MK);
+			break;
 		case 0:
 			cout << "Выход из программы..." << endl;
 			exit(EXIT_SUCCESS);

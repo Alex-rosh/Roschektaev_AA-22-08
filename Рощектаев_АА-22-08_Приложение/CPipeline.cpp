@@ -7,6 +7,13 @@ using namespace std;
 
 int Pipeline::newPipeID = 0;
 
+std::ostream& operator << (std::ostream& out, const Pipeline& P)
+{
+	cout << "Название трубы: " << P.Name << "\n" << "Длина трубы: " << P.Length <<
+		"\n" << "Диаметр трубы: " << P.Diameter << "\n" << "Состояние трубы: " << P.Repairing << "\n";
+	return out;
+}
+
 Pipeline::Pipeline()
 {
 	id = newPipeID++;
@@ -15,24 +22,6 @@ Pipeline::Pipeline()
 int Pipeline::getPipeID() const
 {
 	return id;
-}
-
-//bool Pipeline::checkByID(const Pipeline& p, int parameter)
-//{
-//	return p.getPipeID() >= parameter;
-//}
-//
-//bool Pipeline::checkByRepair(const Pipeline& p, int parameter)
-//{
-//	return p.Repairing == parameter;
-//}
-
-std::ostream& operator << (std::ostream& out, const Pipeline& x)
-{
-	out << "Pipe:\n";
-	out << "ID: " << x.getPipeID() << " Длина: " << x.Length
-		<< " Диаметр: " << x.Diameter << " Состояние: " << x.Repairing << std::endl;
-	return out;
 }
 
 void Pipeline::vivodPipe()

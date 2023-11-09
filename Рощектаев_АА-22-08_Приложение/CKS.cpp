@@ -8,6 +8,13 @@ using namespace std;
 
 int KStation::newKSID = 100;
 
+std::ostream& operator << (std::ostream& out, const KStation& K)
+{
+	cout << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
+		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+	return out;
+}
+
 KStation::KStation()
 {
 	id = newKSID++;
