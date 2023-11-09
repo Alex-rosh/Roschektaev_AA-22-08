@@ -244,8 +244,9 @@ vector<int> findStationByFilter(unordered_map<int, KStation>& mS, Filter1<T> f, 
 	return result;
 }
 
-void PipeSearch(unordered_map<int, Pipeline>& MP)
+vector<int> PipeSearch(unordered_map<int, Pipeline>& MP)
 {
+	vector<int> result{};
 	cout << "Выберите параметры поиска: \n"
 		<< "1 - Найти трубу по ID; \n"
 		<< "2 - Найти трубу по состоянию\n";
@@ -257,7 +258,9 @@ void PipeSearch(unordered_map<int, Pipeline>& MP)
 		for (int i : findPipeByFilter(MP, checkByID, pID))
 		{
 			cout << MP[i];
+			cout << "\n";
 		}
+		result = findPipeByFilter(MP, checkByID, pID);
 	}
 	else
 	{
@@ -268,7 +271,9 @@ void PipeSearch(unordered_map<int, Pipeline>& MP)
 		{
 			cout << MP[i];
 		}
+		result = findPipeByFilter(MP, checkByRepair, repair);
 	}
+	return result;
 }
 
 void KSSearch(unordered_map<int, KStation>& MK)
@@ -294,6 +299,65 @@ void KSSearch(unordered_map<int, KStation>& MK)
 		for (int i : findStationByFilter(MK, checkByNotWorkingWorkshops, percent))
 		{
 			cout << MK[i];
+		}
+	}
+}
+
+void PacketEditPipe(unordered_map<int, Pipeline>& mP)
+{
+	vector<int> allResult;
+	allResult = PipeSearch(mP);
+
+	cout << "Выберите параметры редактирования: \n"
+		<< "1 - редактировать все найденные трубы; \n"
+		<< "2 - редактировать определённые найденные трубы\n";
+	if (getInRange(1, 2) == 1)
+	{
+		cout << "Выберите состояние труб: \n"
+			<< "1 - все трубы работают; \n"
+			<< "2 - все трубы в ремонте\n";
+		if (getInRange(1, 2) == 1)
+		{
+			for (auto& id : allResult)
+				mP[id].Repairing = 1;
+		}
+		else
+		{
+			for (auto& id : allResult)
+				mP[id].Repairing = 0;
+		}
+	}
+	else
+	{
+		vector <int> someResult;
+		while (true)
+		{
+			cout << "Введите ID редактируемой трубы или 0 для продолжения: ";
+			int i;
+			i = getInRange(0, *max_element(allResult.begin(), allResult.end()));
+			if (i)
+			{
+				if (mP.find(i) == mP.end())
+					cout << "Труба с таким ID не найдена\n";
+				else
+					someResult.push_back(i);
+			}
+			else
+				break;
+		}
+
+		cout << "Выберите состояние труб: \n"
+			<< "1 - все трубы работают; \n"
+			<< "2 - все трубы в ремонте\n";
+		if (getInRange(1, 2) == 1)
+		{
+			for (auto& id : someResult)
+				mP[id].Repairing = 1;
+		}
+		else
+		{
+			for (auto& id : someResult)
+				mP[id].Repairing = 0;
 		}
 	}
 }
@@ -337,9 +401,10 @@ int print_menu() {
 	cout << "9. Удалить станцию" << endl;
 	cout << "10. Поиск по трубам" << endl;
 	cout << "11. Поиск по КС" << endl;
+	cout << "12. Пакетное редактирование" << endl;
 	cout << "0. Выход" << endl;
 	cout << ">>> ";
-	variant = getInRange(0, 11);
+	variant = getInRange(0, 12);
 	return variant;
 }
 
@@ -410,6 +475,9 @@ int main()
 			break;
 		case 11:
 			KSSearch(MK);
+			break;
+		case 12:
+			PacketEditPipe(MP);
 			break;
 		case 0:
 			cout << "Выход из программы..." << endl;
