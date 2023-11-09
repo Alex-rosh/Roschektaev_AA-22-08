@@ -25,7 +25,7 @@ void vivodMapPipe(unordered_map <int, Pipeline> MP)
 
 void sohraneniePipe(ofstream& f, unordered_map <int, Pipeline> MP, const int& id, Pipeline& item)
 {
-	f << id << "\n"
+	f << "Pipeline_flag" << "\n"
 		<< item.Name << "\n"
 		<< item.Length << "\n"
 		<< item.Diameter << "\n"
@@ -34,41 +34,39 @@ void sohraneniePipe(ofstream& f, unordered_map <int, Pipeline> MP, const int& id
 
 void vivodMapKS(unordered_map <int, KStation> MK)
 {
-	for (const auto& pair : MK)
+	for (auto& [id, item] : MK)
 	{
-		cout << pair.first << "\n"
-			<< "Название КС: " << pair.second.Name << "\n"
-			<< "Количество цехов: " << pair.second.NWorkshops << "\n"
-			<< "Количество цехов в работе" << pair.second.WorkingWorkshops << "\n"
-			<< "Коэффициент эффективности" << pair.second.Efficiency << "\n";
+		cout << "ID: " << id << "\n"
+			<< "Название КС: " << item.Name << "\n"
+			<< "Количество цехов: " << item.NWorkshops << "\n"
+			<< "Количество цехов в работе: " << item.WorkingWorkshops << "\n"
+			<< "Коэффициент эффективности: " << item.Efficiency << "\n";
 	}
 }
 
 void sohranenieKS(ofstream& f, unordered_map <int, KStation> MK, const int& id, KStation& item)
 {
-	f << id << "\n"
+	f << "KStation_flag" << "\n"
 		<< item.Name << "\n"
 		<< item.NWorkshops << "\n"
 		<< item.WorkingWorkshops << "\n"
 		<< item.Efficiency << "\n";
 }
 
-unordered_map <int, Pipeline> readPipes(unordered_map <int, Pipeline>& MP)
+unordered_map <int, Pipeline> readPipes(unordered_map <int, Pipeline>& MP, string iFileName)
 {
-	ifstream in("save.txt");
+	ifstream in(iFileName);
 	if (in.is_open()) {
-		int countPipe;
-		in >> countPipe;
-		while (countPipe--)
+		while (!in.eof())
 		{
-			Pipeline P;
-			int iddd;
-			in >> iddd;
-			getline(in, P.Name);
-			in >> P.Length;
-			in >> P.Diameter;
-			in >> P.Repairing;
-			MP.insert({ P.getPipeID(), P });
+			string flag;
+			in >> flag;
+			if (flag == "Pipeline_flag")
+			{
+				Pipeline P;
+				P.readPipe(in);
+				MP.insert({ P.getPipeID(), P });
+			}
 		}
 		cout << "Данные загружены" << endl;
 	}
@@ -76,24 +74,30 @@ unordered_map <int, Pipeline> readPipes(unordered_map <int, Pipeline>& MP)
 	return MP;
 }
 
-void readKSs(unordered_map <int, KStation>& MK)
+unordered_map <int, KStation> readKSs(unordered_map <int, KStation>& MK, string iFileName)
 {
-	ifstream in("save.txt");
+	ifstream in(iFileName);
 	if (in.is_open()) {
-		int countKS;
-		in >> countKS;
-		while (countKS--)
+		while (!in.eof())
 		{
-			//KStation::readKS(in, MK);
+			string flag;
+			in >> flag;
+			if (flag == "KStation_flag")
+			{
+				KStation K;
+				K.readKS(in);
+				MK.insert({ K.getKSID(), K });
+			}
 		}
 	}
 	in.close();
+	return MK;
 }
 
-void sohraneniePipes(unordered_map <int, Pipeline> MP)
+void sohraneniePipes(unordered_map <int, Pipeline> MP, string iFileName)
 {
 	ofstream f;
-	f.open("save.txt", ios::out);
+	f.open(iFileName, ios::out);
 	if (f.is_open())
 	{
 		f << MP.size() << endl;
@@ -109,10 +113,10 @@ void sohraneniePipes(unordered_map <int, Pipeline> MP)
 	cout << "Изменения сохранены в файл" << endl;
 }
 
-void sohranenieKSs(unordered_map <int, KStation> MK)
+void sohranenieKSs(unordered_map <int, KStation> MK, string iFileName)
 {
 	ofstream f;
-	f.open("save.txt", ios::app);
+	f.open(iFileName, ios::app);
 	if (f.is_open())
 	{
 		f << MK.size() << endl;
@@ -120,7 +124,7 @@ void sohranenieKSs(unordered_map <int, KStation> MK)
 		{
 			for (auto& [id, item] : MK)
 			{
-				//KStation::sohranenieKS(f, MK, id, item);
+				sohranenieKS(f, MK, id, item);
 			}
 		}
 	}
@@ -171,40 +175,32 @@ void deleteOneKS(unordered_map<int, KStation>& MK)
 	cout << "Station removed!" << endl;
 }
 
-template<typename T>
-using Filter2 = bool(*)(const Pipeline& p, T parameter);
-
-bool checkByID(const Pipeline& p, int parameter)
-{
-	return p.getPipeID() >= parameter;
-}
-
-bool checkByRepair(const Pipeline& p, int parameter)
-{
-	return p.Repairing == parameter;
-}
-
-template<typename T>
-vector<uint32_t> findPipeByFilter(unordered_map<int, Pipeline>& MP, Filter2<T> f, T parameter)
-{
-	vector<uint32_t> result;
-
-	for (auto& [pID, p] : MP)
-	{
-		if (f(p, parameter))
-		{
-			result.push_back(p.getPipeID());
-		}
-	}
-
-	if (result.empty())
-	{
-		cout << "There are no pipes wuth this parameter\n";
-	}
-
-	return result;
-}
-
+//void PipeSearch(unordered_map<int, Pipeline>& MP)
+//{
+//	cout << "Enter the search parameter: \n"
+//		<< "1 - find pipe by IDs; \n"
+//		<< "2 - find pipe by the repair\n";
+//	if (getInRange(1, 2) == 1)
+//	{
+//		int pID;
+//		cout << "Enter pipe IDs: ";
+//		getCorrect(pID);
+//		for (int i : findPipeByFilter(MP, Pipeline::checkByID, pID))
+//		{
+//			MP[i].vivodPipe();
+//		}
+//	}
+//	else
+//	{
+//		int repair;
+//		cout << "Enter marker of repair: ";
+//		repair = getInRange(0, 1);
+//		for (int i : findPipeByFilter(MP, Pipeline::checkByRepair, repair))
+//		{
+//			MP[i].vivodPipe();
+//		}
+//	}
+//}
 
 void FullView(unordered_map <int, Pipeline> MP, unordered_map <int, KStation> MK)
 {
@@ -285,13 +281,25 @@ int main()
 			break;
 		case 6:
 		{
-			//readPipes(MP);
-			//readKSs(MK);
+			cout << "Введите имя файла: ";
+			string iFileName;
+			cin >> ws;
+			getline(cin, iFileName);
+			iFileName = iFileName + ".txt";
+			readPipes(MP, iFileName);
+			readKSs(MK, iFileName);
 		}
 			break;
 		case 7:
-			sohraneniePipes(MP);
-			sohranenieKSs(MK);
+		{
+			cout << "Введите имя файла: ";
+			string iFileName;
+			cin >> ws;
+			getline(cin, iFileName);
+			iFileName = iFileName + ".txt";
+			sohraneniePipes(MP, iFileName);
+			sohranenieKSs(MK, iFileName);
+		}
 			break;
 		case 8:
 			deleteOnePipe(MP);
@@ -299,6 +307,8 @@ int main()
 		case 9:
 			deleteOneKS(MK);
 			break;
+		case 10:
+
 		case 0:
 			cout << "Выход из программы..." << endl;
 			exit(EXIT_SUCCESS);

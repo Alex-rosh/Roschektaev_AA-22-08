@@ -17,6 +17,23 @@ int Pipeline::getPipeID() const
 	return id;
 }
 
+//bool Pipeline::checkByID(const Pipeline& p, int parameter)
+//{
+//	return p.getPipeID() >= parameter;
+//}
+//
+//bool Pipeline::checkByRepair(const Pipeline& p, int parameter)
+//{
+//	return p.Repairing == parameter;
+//}
+
+std::ostream& operator << (std::ostream& out, const Pipeline& x)
+{
+	out << "Pipe:\n";
+	out << "ID: " << x.getPipeID() << " Длина: " << x.Length
+		<< " Диаметр: " << x.Diameter << " Состояние: " << x.Repairing << std::endl;
+	return out;
+}
 
 void Pipeline::vivodPipe()
 {
@@ -31,14 +48,14 @@ void Pipeline::vivodPipe()
 	}
 }
 
-//void Pipeline::readPipe(ifstream& in)
-//{
-//	in >> id;
-//	getline(in, Name);
-//	in >> Length;
-//	in >> Diameter;
-//	in >> Repairing;
-//}
+void Pipeline::readPipe(ifstream& in)
+{
+	in >> ws;
+	getline(in, Name);
+	in >> Length;
+	in >> Diameter;
+	in >> Repairing;
+}
 
 Pipeline Pipeline::AddNewPipe()
 {
@@ -65,6 +82,7 @@ void Pipeline::EditPipe()
 	}
 	else
 	{
+		cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта." << "\n";
 		Repairing = getInRange(0, 1);
 		vivodPipe();
 	}

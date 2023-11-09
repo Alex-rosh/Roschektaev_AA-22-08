@@ -3,13 +3,14 @@
 #include <iostream>
 #include <string>
 
+
 using namespace std;
 
-int KStation::newPipeID = 0;
+int KStation::newKSID = 100;
 
 KStation::KStation()
 {
-	id = newPipeID++;
+	id = newKSID++;
 }
 
 int KStation::getKSID() const
@@ -30,16 +31,14 @@ void KStation::vivodKS()
 	}
 }
 
-//void KStation::readKS(ifstream& in, unordered_map <int, KStation>& MK)
-//{
-//	KStation K;
-//	in >> K.id;
-//	getline(in, K.Name);
-//	in >> K.NWorkshops;
-//	in >> K.WorkingWorkshops;
-//	in >> K.Efficiency;
-//	MK.insert({ K.id, K});
-//}
+void KStation::readKS(ifstream& in)
+{
+	in >> ws;
+	getline(in, Name);
+	in >> NWorkshops;
+	in >> WorkingWorkshops;
+	in >> Efficiency;
+}
 
 KStation KStation::AddNewKS()
 {
@@ -66,7 +65,7 @@ void KStation::EditKS()
 	}
 	else
 	{
-		cout << "Введите количество работающих цехов:\n";
+		cout << "Введите количество работающих цехов, число не должно превышать " << NWorkshops << ":\n";
 		WorkingWorkshops = getInRange(0, NWorkshops);
 		vivodKS();
 	}
