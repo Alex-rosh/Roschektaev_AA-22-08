@@ -10,5 +10,6 @@ double getInRange(double x1, double x2)
         std::cin.clear();
         std::cin.ignore(10000, '\n');
     }
+    cerr << x << endl;
     return x;
 }

@@ -6,10 +6,10 @@
 #include "HKS.h"
 #include "HPipe.h"
 #include "Proverka.h"
+#include <chrono>
 
 
 using namespace std;
-
 
 void vivodMapPipe(unordered_map <int, Pipeline> MP)
 {
@@ -23,7 +23,7 @@ void vivodMapPipe(unordered_map <int, Pipeline> MP)
 	}
 }
 
-void sohraneniePipe(ofstream& f, unordered_map <int, Pipeline> MP, const int& id, Pipeline& item)
+void sohraneniePipe(ofstream& f,Pipeline& item)
 {
 	f << "Pipeline_flag" << "\n"
 		<< item.Name << "\n"
@@ -100,12 +100,11 @@ void sohraneniePipes(unordered_map <int, Pipeline> MP, string iFileName)
 	f.open(iFileName, ios::out);
 	if (f.is_open())
 	{
-		f << MP.size() << endl;
 		if (!MP.size() == 0)
 		{
 			for (auto& [id, item] : MP)
 			{
-				sohraneniePipe(f, MP, id, item);
+				sohraneniePipe(f, item);
 			}
 		}
 	}
@@ -119,7 +118,6 @@ void sohranenieKSs(unordered_map <int, KStation> MK, string iFileName)
 	f.open(iFileName, ios::app);
 	if (f.is_open())
 	{
-		f << MK.size() << endl;
 		if (!MK.size() == 0)
 		{
 			for (auto& [id, item] : MK)
@@ -134,14 +132,16 @@ void sohranenieKSs(unordered_map <int, KStation> MK, string iFileName)
 
 Pipeline& selectPipe(unordered_map<int, Pipeline>& MP)
 {
-	cout << "Enter pipe ID: ";
+	cout << "Введите ID трубы: ";
 	int userID;
 	getCorrect(userID);
+	cerr << userID << "\n";
 	while (MP.find(userID) == MP.end())
 	{
-		cout << "Error! There is no pipe with this id\n";
-		cout << "Enter pipe ID: ";
+		cout << "Труба с таким ID не найдена\n";
+		cout << "Введите ID трубы: ";
 		getCorrect(userID);
+		cerr << userID << "\n";
 	}
 	return MP[userID];
 }
@@ -150,20 +150,22 @@ void deleteOnePipe(unordered_map<int, Pipeline>& MP)
 {
 	Pipeline p = selectPipe(MP);
 	MP.erase(p.getPipeID());
-	cout << "Pipe removed!" << endl;
+	cout << "Труба удалена!" << endl;
 }
 
 
 KStation& selectStation(unordered_map<int, KStation>& MK)
 {
-	cout << "Enter station ID: ";
+	cout << "Введите ID станции: ";
 	int userID;
 	getCorrect(userID);
+	cerr << userID << "\n";
 	while (MK.find(userID) == MK.end())
 	{
-		cout << "Error! There is no station with this id\n";
-		cout << "Enter station ID: ";
+		cout << "КС с таким ID не найдена\n";
+		cout << "Введите ID станции: ";
 		getCorrect(userID);
+		cerr << userID << "\n";
 	}
 	return MK[userID];
 }
@@ -172,7 +174,7 @@ void deleteOneKS(unordered_map<int, KStation>& MK)
 {
 	KStation s = selectStation(MK);
 	MK.erase(s.getKSID());
-	cout << "Station removed!" << endl;
+	cout << "Станция удалена!" << endl;
 }
 
 template<typename T>
@@ -286,6 +288,7 @@ void KSSearch(unordered_map<int, KStation>& MK)
 		string name;
 		cout << "Введите название КС: ";
 		cin >> name;
+		cerr << name << "\n";
 		for (int i : findStationByFilter(MK, checkByName, name))
 		{
 			cout << MK[i];
@@ -296,6 +299,7 @@ void KSSearch(unordered_map<int, KStation>& MK)
 		double percent;
 		cout << "Введите процент не рабочих цехов: ";
 		getCorrect(percent);
+		cerr << percent << "\n";
 		for (int i : findStationByFilter(MK, checkByNotWorkingWorkshops, percent))
 		{
 			cout << MK[i];
@@ -410,10 +414,14 @@ int print_menu() {
 
 int main()
 {
+	redirect_output_wrapper cerr_out(cerr);
+	string time = "now";
+	ofstream logfile("log__" + time + ".txt");
+	if (logfile)
+		cerr_out.redirect(logfile);
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
-	int variant;
-	variant = 1;
+	int variant = 1;
 	unordered_map <int, Pipeline> MP;
 	unordered_map <int, KStation> MK;
 
@@ -449,6 +457,7 @@ int main()
 			cin >> ws;
 			getline(cin, iFileName);
 			iFileName = iFileName + ".txt";
+			cerr << iFileName << "\n";
 			readPipes(MP, iFileName);
 			readKSs(MK, iFileName);
 		}
@@ -460,6 +469,7 @@ int main()
 			cin >> ws;
 			getline(cin, iFileName);
 			iFileName = iFileName + ".txt";
+			cerr << iFileName << "\n";
 			sohraneniePipes(MP, iFileName);
 			sohranenieKSs(MK, iFileName);
 		}

@@ -53,6 +53,7 @@ KStation KStation::AddNewKS()
 	cout << "Добавление новой КС\n" << "Введите название КС:\n";
 	cin >> ws;
 	getline(cin, K.Name);
+	cerr << K.Name << "\n";
 	cout << "Введите количество цехов:\n";
 	getCorrect(K.NWorkshops);
 	cout << "Введите количество работающих цехов:\n";

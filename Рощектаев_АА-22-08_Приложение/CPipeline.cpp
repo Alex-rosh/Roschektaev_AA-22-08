@@ -52,6 +52,7 @@ Pipeline Pipeline::AddNewPipe()
 	cout << "Добавление новой трубы\n" << "Введите название трубы:\n";
 	cin >> ws;
 	getline(cin, P.Name);
+	cerr << P.Name << "\n";
 	cout << "Введите длину трубы:\n";
 	getCorrect(P.Length);
 	cout << "Введите диаметр трубы:\n";
