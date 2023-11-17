@@ -13,3 +13,11 @@ double getInRange(double x1, double x2)
     cerr << x << endl;
     return x;
 }
+
+string readLine() {
+    string readline;
+    cin >> ws;
+    getline(cin, readline);
+    cerr << readline << "\n";
+    return readline;
+}

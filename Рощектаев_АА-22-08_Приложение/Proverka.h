@@ -38,3 +38,4 @@ T getCorrect(T& x)
 }
 
 double getInRange(double x1, double x2);
+string readLine();

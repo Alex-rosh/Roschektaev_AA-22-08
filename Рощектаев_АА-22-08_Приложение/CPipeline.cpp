@@ -9,8 +9,15 @@ int Pipeline::newPipeID = 0;
 
 std::ostream& operator << (std::ostream& out, const Pipeline& P)
 {
-	cout << "Название трубы: " << P.Name << "\n" << "Длина трубы: " << P.Length <<
-		"\n" << "Диаметр трубы: " << P.Diameter << "\n" << "Состояние трубы: " << P.Repairing << "\n";
+	if (P.Name.empty())
+	{
+		cout << "Нет доступных труб для взаимодействия" << endl;
+	}
+	else
+	{
+		cout << "Название трубы: " << P.Name << "\n" << "Длина трубы: " << P.Length <<
+			"\n" << "Диаметр трубы: " << P.Diameter << "\n" << "Состояние трубы: " << P.Repairing << "\n";
+	}
 	return out;
 }
 
@@ -24,23 +31,9 @@ int Pipeline::getPipeID() const
 	return id;
 }
 
-void Pipeline::vivodPipe()
-{
-	if (Name.empty())
-	{
-		cout << "Нет доступных труб для взаимодействия" << endl;
-	}
-	else
-	{
-		cout << "Название трубы: " << Name << "\n" << "Длина трубы: " << Length <<
-			"\n" << "Диаметр трубы: " << Diameter << "\n" << "Состояние трубы: " << Repairing << "\n";
-	}
-}
-
 void Pipeline::readPipe(ifstream& in)
 {
-	in >> ws;
-	getline(in, Name);
+	getline(in >> ws, Name);
 	in >> Length;
 	in >> Diameter;
 	in >> Repairing;
@@ -50,9 +43,7 @@ Pipeline Pipeline::AddNewPipe()
 {
 	Pipeline P;
 	cout << "Добавление новой трубы\n" << "Введите название трубы:\n";
-	cin >> ws;
-	getline(cin, P.Name);
-	cerr << P.Name << "\n";
+	P.Name = readLine();
 	cout << "Введите длину трубы:\n";
 	getCorrect(P.Length);
 	cout << "Введите диаметр трубы:\n";
@@ -60,7 +51,7 @@ Pipeline Pipeline::AddNewPipe()
 	cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта.\n";
 	P.Repairing = getInRange(0, 1);
 	cout << "Проверьте корректность введённых данных:\n";
-	P.vivodPipe();
+	cout << P;
 	return P;
 }
 
@@ -74,6 +65,15 @@ void Pipeline::EditPipe()
 	{
 		cout << "Выберите состояние трубы, где 0 - труба работает, 1 - труба находится в состоянии ремонта." << "\n";
 		Repairing = getInRange(0, 1);
-		vivodPipe();
+		cout << "Труба успешно отредактирована";
 	}
+}
+
+void Pipeline::sohraneniePipe(ofstream& f, Pipeline& item)
+{
+	f << "Pipeline_flag" << "\n"
+		<< item.Name << "\n"
+		<< item.Length << "\n"
+		<< item.Diameter << "\n"
+		<< item.Repairing << "\n";
 }

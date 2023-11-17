@@ -10,8 +10,15 @@ int KStation::newKSID = 100;
 
 std::ostream& operator << (std::ostream& out, const KStation& K)
 {
-	cout << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
-		"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+	if (K.Name.empty())
+	{
+		cout << "Нет доступных КС для взаимодействия" << endl;
+	}
+	else
+	{
+		cout << "Название КС: " << K.Name << "\n" << "Количество цехов: " << K.NWorkshops <<
+			"\n" << "Количество цехов в работе: " << K.WorkingWorkshops << "\n" << "Коэффициент эффективности: " << K.Efficiency << "\n";
+	}
 	return out;
 }
 
@@ -25,23 +32,9 @@ int KStation::getKSID() const
 	return id;
 }
 
-void KStation::vivodKS()
-{
-	if (Name.empty())
-	{
-		cout << "Нет доступных КС для взаимодействия" << endl;
-	}
-	else
-	{
-		cout << "Название КС: " << Name << "\n" << "Количество цехов: " << NWorkshops <<
-			"\n" << "Количество цехов в работе: " << WorkingWorkshops << "\n" << "Коэффициент эффективности: " << Efficiency << "\n";
-	}
-}
-
 void KStation::readKS(ifstream& in)
 {
-	in >> ws;
-	getline(in, Name);
+	getline(in >> ws, Name);
 	in >> NWorkshops;
 	in >> WorkingWorkshops;
 	in >> Efficiency;
@@ -51,9 +44,7 @@ KStation KStation::AddNewKS()
 {
 	KStation K;
 	cout << "Добавление новой КС\n" << "Введите название КС:\n";
-	cin >> ws;
-	getline(cin, K.Name);
-	cerr << K.Name << "\n";
+	K.Name = readLine();
 	cout << "Введите количество цехов:\n";
 	getCorrect(K.NWorkshops);
 	cout << "Введите количество работающих цехов:\n";
@@ -61,7 +52,7 @@ KStation KStation::AddNewKS()
 	cout << "Введите коэффициент эффективности:\n";
 	getCorrect(K.Efficiency);
 	cout << "Проверьте корректность введённых данных:\n";
-	K.vivodKS();
+	cout << K;
 	return K;
 }
 
@@ -75,7 +66,16 @@ void KStation::EditKS()
 	{
 		cout << "Введите количество работающих цехов, число не должно превышать " << NWorkshops << ":\n";
 		WorkingWorkshops = getInRange(0, NWorkshops);
-		vivodKS();
+		cout << "КС успешно отредактирована";
 	}
 
+}
+
+void KStation::sohranenieKS(ofstream& f, KStation& item)
+{
+	f << "KStation_flag" << "\n"
+		<< item.Name << "\n"
+		<< item.NWorkshops << "\n"
+		<< item.WorkingWorkshops << "\n"
+		<< item.Efficiency << "\n";
 }

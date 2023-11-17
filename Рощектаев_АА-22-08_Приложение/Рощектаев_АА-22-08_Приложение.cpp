@@ -23,15 +23,6 @@ void vivodMapPipe(unordered_map <int, Pipeline> MP)
 	}
 }
 
-void sohraneniePipe(ofstream& f,Pipeline& item)
-{
-	f << "Pipeline_flag" << "\n"
-		<< item.Name << "\n"
-		<< item.Length << "\n"
-		<< item.Diameter << "\n"
-		<< item.Repairing << "\n";
-}
-
 void vivodMapKS(unordered_map <int, KStation> MK)
 {
 	for (auto& [id, item] : MK)
@@ -42,15 +33,6 @@ void vivodMapKS(unordered_map <int, KStation> MK)
 			<< "Количество цехов в работе: " << item.WorkingWorkshops << "\n"
 			<< "Коэффициент эффективности: " << item.Efficiency << "\n";
 	}
-}
-
-void sohranenieKS(ofstream& f, unordered_map <int, KStation> MK, const int& id, KStation& item)
-{
-	f << "KStation_flag" << "\n"
-		<< item.Name << "\n"
-		<< item.NWorkshops << "\n"
-		<< item.WorkingWorkshops << "\n"
-		<< item.Efficiency << "\n";
 }
 
 unordered_map <int, Pipeline> readPipes(unordered_map <int, Pipeline>& MP, string iFileName)
@@ -104,7 +86,7 @@ void sohraneniePipes(unordered_map <int, Pipeline> MP, string iFileName)
 		{
 			for (auto& [id, item] : MP)
 			{
-				sohraneniePipe(f, item);
+				Pipeline::sohraneniePipe(f, item);
 			}
 		}
 	}
@@ -122,7 +104,7 @@ void sohranenieKSs(unordered_map <int, KStation> MK, string iFileName)
 		{
 			for (auto& [id, item] : MK)
 			{
-				sohranenieKS(f, MK, id, item);
+				KStation::sohranenieKS(f, item);
 			}
 		}
 	}
@@ -132,18 +114,24 @@ void sohranenieKSs(unordered_map <int, KStation> MK, string iFileName)
 
 Pipeline& selectPipe(unordered_map<int, Pipeline>& MP)
 {
-	cout << "Введите ID трубы: ";
+	cout << "Введите ID трубы или 0, чтобы продолжить: ";
 	int userID;
 	getCorrect(userID);
-	cerr << userID << "\n";
-	while (MP.find(userID) == MP.end())
-	{
-		cout << "Труба с таким ID не найдена\n";
-		cout << "Введите ID трубы: ";
-		getCorrect(userID);
-		cerr << userID << "\n";
+	if (!MP.empty()) {
+		while (MP.find(userID) == MP.end())
+		{
+			if (userID == 0) {
+				break;
+			}
+			cout << "Труба с таким ID не найдена\n";
+			cout << "Введите ID трубы: ";
+			getCorrect(userID);
+		}
+		return MP[userID];
 	}
-	return MP[userID];
+	else {
+		cout << "Нет доступных труб для взаимодействия";
+	}
 }
 
 void deleteOnePipe(unordered_map<int, Pipeline>& MP)
@@ -159,15 +147,21 @@ KStation& selectStation(unordered_map<int, KStation>& MK)
 	cout << "Введите ID станции: ";
 	int userID;
 	getCorrect(userID);
-	cerr << userID << "\n";
-	while (MK.find(userID) == MK.end())
-	{
-		cout << "КС с таким ID не найдена\n";
-		cout << "Введите ID станции: ";
-		getCorrect(userID);
-		cerr << userID << "\n";
+	if (!MK.empty()) {
+		while (MK.find(userID) == MK.end())
+		{
+			if (userID == 0) {
+				break;
+			}
+			cout << "КС с таким ID не найдена\n";
+			cout << "Введите ID станции: ";
+			getCorrect(userID);
+		}
+		return MK[userID];
 	}
-	return MK[userID];
+	else {
+		cout << "Нет доступных труб для взаимодействия";
+	}
 }
 
 void deleteOneKS(unordered_map<int, KStation>& MK)
@@ -287,8 +281,7 @@ void KSSearch(unordered_map<int, KStation>& MK)
 	{
 		string name;
 		cout << "Введите название КС: ";
-		cin >> name;
-		cerr << name << "\n";
+		name = readLine();
 		for (int i : findStationByFilter(MK, checkByName, name))
 		{
 			cout << MK[i];
@@ -299,7 +292,6 @@ void KSSearch(unordered_map<int, KStation>& MK)
 		double percent;
 		cout << "Введите процент не рабочих цехов: ";
 		getCorrect(percent);
-		cerr << percent << "\n";
 		for (int i : findStationByFilter(MK, checkByNotWorkingWorkshops, percent))
 		{
 			cout << MK[i];
@@ -320,16 +312,8 @@ void PacketEditPipe(unordered_map<int, Pipeline>& mP)
 		cout << "Выберите состояние труб: \n"
 			<< "1 - все трубы работают; \n"
 			<< "2 - все трубы в ремонте\n";
-		if (getInRange(1, 2) == 1)
-		{
-			for (auto& id : allResult)
-				mP[id].Repairing = 1;
-		}
-		else
-		{
-			for (auto& id : allResult)
-				mP[id].Repairing = 0;
-		}
+		for (auto& id : allResult)
+			mP[id].Repairing = (getInRange(1, 2) == 1);
 	}
 	else
 	{
@@ -353,16 +337,8 @@ void PacketEditPipe(unordered_map<int, Pipeline>& mP)
 		cout << "Выберите состояние труб: \n"
 			<< "1 - все трубы работают; \n"
 			<< "2 - все трубы в ремонте\n";
-		if (getInRange(1, 2) == 1)
-		{
 			for (auto& id : someResult)
-				mP[id].Repairing = 1;
-		}
-		else
-		{
-			for (auto& id : someResult)
-				mP[id].Repairing = 0;
-		}
+				mP[id].Repairing = (getInRange(1, 2) == 1);
 	}
 }
 
@@ -454,10 +430,7 @@ int main()
 		{
 			cout << "Введите имя файла: ";
 			string iFileName;
-			cin >> ws;
-			getline(cin, iFileName);
-			iFileName = iFileName + ".txt";
-			cerr << iFileName << "\n";
+			iFileName = readLine();
 			readPipes(MP, iFileName);
 			readKSs(MK, iFileName);
 		}
@@ -466,10 +439,7 @@ int main()
 		{
 			cout << "Введите имя файла: ";
 			string iFileName;
-			cin >> ws;
-			getline(cin, iFileName);
-			iFileName = iFileName + ".txt";
-			cerr << iFileName << "\n";
+			iFileName = readLine();
 			sohraneniePipes(MP, iFileName);
 			sohranenieKSs(MK, iFileName);
 		}

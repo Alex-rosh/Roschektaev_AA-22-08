@@ -17,10 +17,10 @@ public:
 	int WorkingWorkshops;
 	double Efficiency;
 	KStation();
-	void vivodKS();
 	void readKS(ifstream& in);
 	static KStation AddNewKS();
 	void EditKS();
 	int getKSID() const;
+	static void sohranenieKS(ofstream& f, KStation& item);
 	friend std::ostream& operator << (std::ostream& out, const KStation& x);
 };

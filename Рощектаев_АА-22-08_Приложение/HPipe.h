@@ -19,10 +19,10 @@ public:
 	Pipeline();
 	
 	int getPipeID() const;
-	void vivodPipe();
 	void readPipe(ifstream& in);
 	static Pipeline AddNewPipe();
 	void EditPipe();
+	static void sohraneniePipe(ofstream& f, Pipeline& item);
 
 	friend std::ostream& operator << (std::ostream& out, const Pipeline& x);
 };
