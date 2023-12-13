@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{bde9d4ad-9e1a-4733-90f4-9ca5def15703}</ProjectGuid>
-    <RootNamespace>РощектаевАА2208Приложение</RootNamespace>
+    <ProjectGuid>{1be03cc9-cc4d-4897-b613-3c1d9d5363a3}</ProjectGuid>
+    <RootNamespace>Roshchektaevprilozhenie</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -128,15 +128,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CKS.cpp" />
-    <ClCompile Include="CPipeline.cpp" />
-    <ClCompile Include="Proverka.cpp" />
-    <ClCompile Include="Рощектаев_АА-22-08_Приложение.cpp" />
+    <ClCompile Include="CGasTransportingNetwork.cpp" />
+    <ClCompile Include="CPipe.cpp" />
+    <ClCompile Include="CStation.cpp" />
+    <ClCompile Include="Roshchektaev_main_laba.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HKS.h" />
-    <ClInclude Include="HPipe.h" />
-    <ClInclude Include="Proverka.h" />
+    <ClInclude Include="..\..\..\..\Рабочий стол\3 семестр\Labs_plusi-master\Roshchektaev_main_laba.h" />
+    <ClInclude Include="CGasTransportingNetwork.h" />
+    <ClInclude Include="CPipe.h" />
+    <ClInclude Include="CStation.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

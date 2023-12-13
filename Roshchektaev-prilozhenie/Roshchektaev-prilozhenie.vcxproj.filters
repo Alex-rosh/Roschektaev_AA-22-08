@@ -15,27 +15,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Рощектаев_АА-22-08_Приложение.cpp">
+    <ClCompile Include="CGasTransportingNetwork.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="CPipeline.cpp">
+    <ClCompile Include="CPipe.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Proverka.cpp">
+    <ClCompile Include="CStation.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="CKS.cpp">
+    <ClCompile Include="Utils.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Roshchektaev_main_laba.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HPipe.h">
+    <ClInclude Include="CGasTransportingNetwork.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Proverka.h">
+    <ClInclude Include="CPipe.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="HKS.h">
+    <ClInclude Include="CStation.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Рабочий стол\3 семестр\Labs_plusi-master\Roshchektaev_main_laba.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
